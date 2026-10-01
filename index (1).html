@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>NewCo survey</title>
+<style>
+  :root {
+    --bg: #faf7f5; --card: #fff; --ink: #2b2230; --muted: #6f6474; --line: #e7dfe4;
+    --accent: #8a3f6f; --accent-soft: #f6ecf2; --err: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+  .brand { font-weight: 700; letter-spacing: .02em; color: var(--accent); margin-bottom: 12px; }
+  .progress { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; margin-bottom: 20px; }
+  .progress > div { height: 100%; background: var(--accent); transition: width .3s; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px 24px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+  h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 14px; }
+  h2 { font-size: 1.3rem; line-height: 1.3; margin: 0 0 10px; }
+  .eyebrow { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  .intro { margin: 0 0 22px; }
+  .intro p { margin: 0 0 12px; }
+  .stimulus { background: var(--accent-soft); border-radius: 12px; padding: 18px 20px; margin: 4px 0 26px; }
+  .stimulus .tag { font-size: .8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+  .stimulus h3 { margin: 4px 0 10px; font-size: 1.2rem; line-height: 1.3; }
+  .stimulus p { margin: 0; }
+  fieldset.q { border: 0; margin: 0 0 30px; padding: 0; min-width: 0; }
+  legend { font-weight: 600; padding: 0; margin-bottom: 6px; }
+  .opt { font-weight: 400; color: var(--muted); font-size: .9em; }
+  .help { margin: 0 0 10px; color: var(--muted); font-size: .93rem; }
+  .choice { display: flex; gap: 12px; align-items: flex-start; padding: 11px 14px; border: 1px solid var(--line);
+    border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: #fff; }
+  .choice:hover { border-color: #cdb9c6; }
+  .choice input { margin: 4px 0 0; accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
+  .choice.on { border-color: var(--accent); background: var(--accent-soft); }
+  .choice.off { opacity: .45; cursor: not-allowed; }
+  input[type=text], input[type=email], select, textarea { width: 100%; font: inherit; padding: 11px 12px;
+    border: 1px solid var(--line); border-radius: 10px; background: #fff; color: inherit; }
+  textarea { min-height: 120px; resize: vertical; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, .pill input:focus-visible + span,
+  .choice input:focus-visible { outline: 3px solid #d9b3cc; outline-offset: 1px; }
+  .other { margin: -2px 0 10px 44px; width: calc(100% - 44px) !important; }
+  .pills { display: flex; gap: 8px; }
+  .pill { position: relative; flex: 1 1 0; min-width: 0; }
+  .pill input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .pill span { display: flex; align-items: center; justify-content: center; height: 100%; text-align: center;
+    padding: 10px 4px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-size: .9rem; line-height: 1.2; }
+  .pill input:checked + span { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .scale-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: .85rem; margin-top: 6px; gap: 12px; }
+  .scale-labels span:last-child { text-align: right; }
+  .grow { padding: 14px 0; border-top: 1px solid var(--line); }
+  .grow:first-of-type { border-top: 0; padding-top: 4px; }
+  .grow .rl { margin-bottom: 8px; }
+  .err { color: var(--err); font-size: .9rem; margin-top: 6px; }
+  .has-err legend { color: var(--err); }
+  .nav { display: flex; gap: 12px; margin-top: 8px; }
+  button { font: inherit; font-weight: 600; border-radius: 10px; padding: 12px 22px; cursor: pointer; border: 1px solid var(--accent); }
+  .primary { background: var(--accent); color: #fff; margin-left: auto; }
+  .primary:disabled { opacity: .6; cursor: wait; }
+  .ghost { background: transparent; color: var(--accent); }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; font-weight: 400; }
+  .demo { background: #fff4d6; border: 1px solid #f0d58a; color: #6b5400; padding: 8px 12px; border-radius: 8px;
+    font-size: .85rem; margin-bottom: 14px; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .foot { color: var(--muted); font-size: .8rem; text-align: center; margin-top: 18px; }
+  @media (max-width: 480px) {
+    .card { padding: 22px 16px; }
+    .pill span { font-size: .8rem; padding: 10px 2px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">NewCo</div>
+  <div id="app"></div>
+  <div class="foot">Your answers are anonymous unless you choose to leave your email.</div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Config
+// ---------------------------------------------------------------------------
+
+// Paste the Apps Script web app URL here (see README.md). While empty, the
+// page runs in demo mode: nothing is sent, the payload is logged to the console.
+const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbzfA4KGMt1etHwfsHLzFdmGd5ZNMO_wpERnjGZD6wDx9iyFuRqPvWtFH5X0EXj3Mt3f/exec';
+
+const STORE_KEY = 'newco-survey-v1';
+const OTHER = 'Other';
+const ELIGIBLE = ['13 to 15', '16 to 17', '18 to 20', '21 to 25'];
+const TEEN = ['13 to 15', '16 to 17'];
+
+// Second-person versions, since the respondent is answering about her own
+// health, not a parent answering about a daughter. "PMOS" from the source
+// copy has been corrected to "PCOS" (Direction B and row B); flag this with
+// Grace if that wasn't the intent.
+const DIRECTIONS = {
+  A: {
+    headline: 'Every girl deserves a baseline',
+    body: 'Every time you go to the doctor, they take your height, weight, vision, hearing, and blood pressure. Even if there is no problem that has come up. Despite this, one of the most important signals of a young woman’s health is rarely measured at the same standard. Your period. Here at NewCo, we believe you deserve a personalized baseline for your hormonal and metabolic health so you can understand what is normal for your body and catch changes early. That way, you’re not left guessing what’s going on with you. Through our clinic and platform, we turn the menstrual cycle into something measurable, trackable, and clinically meaningful.'
+  },
+  B: {
+    headline: 'Women’s health begins with her first cycle',
+    body: 'The healthcare system tends to treat the teen years like something to just get through, instead of the time that sets up your health for the rest of your life. Issues like painful periods, heavy bleeding, or mood swings that mess with your day get brushed off as normal.  Conditions like PCOS or endometriosis often don’t get noticed until years later, when downstream effects have become a lot more serious. At NewCo, we believe your period is the most effective window into understanding your hormones, your body, and your overall health. By tracking your cycle and working with clinicians who actually get it and hear you out, we can not only improve how girls like you feel today, but also your health for decades to come. '
+  },
+  C: {
+    headline: 'Addressing period health to help you be your best self',
+    body: 'For too long, we’ve all normalized that your “time of the month” means missing school or practice, feeling exhausted, dealing with mood swings, and not getting enough sleep. At NewCo, we believe young women shouldn’t accept this.  Instead,  we support every young woman to unlock her potential through a full review of her health. We want to help you  understand what’s going on with your body, build a plan that is made for you, and  stay at the top of your game so you welcome and don’t dread your period every month.'
+  },
+  D: {
+    headline: 'Understanding what’s “normal” for you.',
+    body: 'Most girls have no way to know whether their period is “normal,” and when you turn to the internet for facts, you often find half-truths about what is “expected.” Cramping? That’s just PMS. Missed periods? That’s just cycle stabilization. At NewCo, we partner with you to measure, track, and create a personalized care plan with the help of experts in adolescent and young adult health. We want to give you a clear picture of what normal looks like specifically for you so you know what to watch and when to act and get the care you need sooner.'
+  }
+};
+
+// Shared rows for the ranking and coverage grids: identical wording in both.
+// These match each Direction's tagline (the bolded headline above), so the
+// "all four together" comparison stays anchored to the same short phrase
+// the respondent already saw and reacted to.
+const ROWS = [
+  { key: 'A', label: 'A. Every girl deserves a baseline' },
+  { key: 'B', label: 'B. Women’s health begins with her first cycle' },
+  { key: 'C', label: 'C. Addressing period health to help you be your best self' },
+  { key: 'D', label: 'D. Understanding what’s “normal” for you' }
+];
+
+const STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+  'District of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas',
+  'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+  'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+  'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+  'West Virginia', 'Wisconsin', 'Wyoming', 'Outside the US'
+];
+
+// ---------------------------------------------------------------------------
+// Questions
+// ---------------------------------------------------------------------------
+
+const Q = {
+  q1: { type: 'radio', id: 'q1', required: true, title: 'How old are you?',
+    options: ['12 or younger', '13 to 15', '16 to 17', '18 to 20', '21 to 25', '26 or older'] },
+  q2: { type: 'select', id: 'q2', required: true, title: 'Where do you live?', placeholder: 'Choose a state', options: STATES },
+  q3: { type: 'checkbox', id: 'q3', required: true, other: true, help: 'Check all that apply.',
+    title: "When something comes up with your health, where do you turn first?",
+    options: ['My doctor or PCP', 'A family doctor', 'An OB-GYN', 'Urgent care', 'A specific app or website',
+      'Friends or family', 'I look it up myself'] },
+  q4a: { type: 'checkbox', id: 'q4a', required: true, other: true, max: 3, exclusive: 'Nothing in particular right now',
+    title: 'What concerns you most about your health right now?', help: 'Check up to three.',
+    options: ['Periods: pain, heavy bleeding, or irregularity', 'Acne or skin', 'Weight, eating, or body image',
+      'Mood, anxiety, or stress', 'Sleep', 'Energy or being run down',
+      'Understanding sex and contraception', 'Nothing in particular right now'] },
+  q4b: { type: 'checkbox', id: 'q4b', required: true, other: true, max: 3, exclusive: 'Nothing in particular right now',
+    title: 'What concerns you most about your health right now?', help: 'Check up to three.',
+    options: ['Periods: pain, heavy bleeding, or irregularity', 'Whether I have care at all now that I’m on my own',
+      'Mood, anxiety, or stress', 'Weight, eating, or body image', 'Future fertility', 'Contraception',
+      'Nothing in particular right now'] },
+  q5: { type: 'radio', id: 'q5', required: true,
+    title: 'In the past year, how often have you missed school, work, practice, or plans because of your period?',
+    options: ['Most months', 'A few times', 'Once or twice', 'Never', "I don't know"] },
+  q6: { type: 'radio', id: 'q6', required: true, other: true,
+    title: 'Have you ever raised a concern about your periods with a doctor? What happened?',
+    options: ["I haven't raised one", 'It was taken seriously and looked into', 'I was told it was normal and sent home',
+      'I was offered birth control without much else', 'I am still waiting on answers', "I don't know"] },
+  rank: { type: 'grid', id: 'rank', required: true, unique: true, rows: ROWS, cols: ['1st', '2nd', '3rd', '4th'],
+    title: 'Rank these four in order of what matters most to you.',
+    help: 'Use each rank once. Choosing a rank that is already taken moves it to the new row.' },
+  cover: { type: 'grid', id: 'cover', required: true, rows: ROWS,
+    cols: ['Already fully covered', 'Partly covered', 'Not covered at all', 'Not sure'],
+    title: "For each one, how well does your current care already deliver this?" },
+  q13: { type: 'textarea', id: 'q13', required: true,
+    title: 'What could a practice like this do for you that your current doctor does not?',
+    help: 'If the answer is “nothing,” say so. That is useful to us.' },
+  q14: { type: 'scale', id: 'q14', required: true, lo: 'Not at all likely', hi: 'Very likely',
+    title: 'If a practice like this were available to you, virtually or nearby, how likely would you be to book a first visit for yourself in the next six months?' },
+  q15: { type: 'radio', id: 'q15', required: true,
+    title: 'Today, when you visit a doctor, how much do your parents typically see or hear about, beyond scheduling and billing?',
+    options: ['Everything, including test results, visit notes, and what was discussed',
+      'Test results and notes, but some topics are kept private between me and my doctor',
+      'Only appointment and billing information', "I'm not sure what they have access to"] },
+  q16: { type: 'radio', id: 'q16', required: true, other: true,
+    title: 'If a practice like this existed, what would you want your parent(s) to see beyond account status and billing?',
+    options: ["Nothing more, I'd want to keep the rest private", 'Logistics like appointments and follow-ups',
+      'The general topics of my care and my care plan', 'Everything, including what I discuss with my clinician',
+      "I'm not sure"] },
+  q17: { type: 'scale', id: 'q17', required: true, lo: 'Very uncomfortable', hi: 'Very comfortable',
+    title: 'How comfortable would you be with a system that let you decide what your parents can see?' },
+  q18: { type: 'textarea', id: 'q18', required: false,
+    title: 'You selected 3 or lower. Can you please share what would make you more comfortable with this?' },
+  q19: { type: 'checkbox', id: 'q19', required: false, title: 'Would you like to hear from us?',
+    options: ['Yes, I am open to a 20 minute conversation!', 'Yes, I would like to learn more!'] },
+  email: { type: 'email', id: 'email', required: false, title: 'Email', placeholder: 'you@example.com' }
+};
+
+function directionQ(letter) {
+  return { type: 'scale', id: 'dir' + letter, required: true, lo: 'Not at all', hi: 'Very much',
+    title: 'How much do you want this for yourself?' };
+}
+
+// ---------------------------------------------------------------------------
+// Flow
+// ---------------------------------------------------------------------------
+
+const a = () => S.answers;
+const isEligible = () => ELIGIBLE.includes(a().q1);
+const isTeen = () => TEEN.includes(a().q1);
+
+const STEPS = [
+  { id: 'intro' },
+  { id: 'family', section: 'About you', questions: () => [Q.q1, Q.q2, Q.q3],
+    after: () => {
+      if (!isEligible()) { screenOut(); return 'stop'; }
+    } },
+  { id: 'now', section: 'What is happening now',
+    questions: () => [isTeen() ? Q.q4a : Q.q4b, Q.q5, Q.q6] },
+  { id: 'dirIntro', section: 'Four directions, one at a time', title: 'Four directions, one at a time',
+    intro: '<p>On the next four pages are four descriptions of what this practice could be. They are different from each other on purpose. Read each one and tell us how much you want it for yourself.</p>' },
+  ...[0, 1, 2, 3].map(i => ({ id: 'dir' + i, direction: i, section: `Direction ${i + 1} of 4`,
+    questions: () => [directionQ(S.order[i])] })),
+  { id: 'together', section: 'All four together', title: 'All four together',
+    intro: "<p>Now look at all four side by side. The next two questions ask about the same list twice: first what matters most to you, then how well your current care already delivers it.</p>",
+    questions: () => [Q.rank, Q.cover] },
+  { id: 'open', section: 'All four together', questions: () => [Q.q13, Q.q14] },
+  { id: 'access', section: 'Your health information', show: () => isTeen(), questions: () => [Q.q15] },
+  { id: 'privacy', section: 'Your health information', show: () => isTeen(), title: 'How this practice would handle your record',
+    intro: "<p>Many practices ask a parent to step out of the room for part of a teen's visit, so you can speak privately with your clinician about certain topics. This practice would extend that idea to your records. Your parent(s) would always see that you're receiving care and be able to handle billing, without seeing what the care is actually about, unless you choose to share it. For any treatment that needs a parent's consent, they'd be part of that decision. Beyond that, what you share with them would be your choice, and we'd encourage you to share. The exceptions are the limited situations where the law or your safety requires otherwise.</p>",
+    questions: () => [Q.q16, Q.q17, ...(a().q17 && a().q17 <= 3 ? [Q.q18] : [])] },
+  { id: 'contact', section: 'Stay in touch (optional)', title: 'Stay in touch (optional)',
+    intro: '<p>If you are open to a 20 minute conversation or would like to learn more, please feel free to leave your email.</p>',
+    questions: () => [Q.q19, Q.email], nextLabel: 'Submit',
+    after: () => { submit(); return 'stop'; } }
+];
+
+const visibleSteps = () => STEPS.filter(s => !s.show || s.show());
+const stepQs = step => (step.questions ? step.questions() : []);
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+
+function uid() {
+  return (crypto.randomUUID && crypto.randomUUID()) || Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+function shuffle(arr) {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+function fresh() {
+  return { id: uid(), order: shuffle(['A', 'B', 'C', 'D']), answers: {}, step: 0, history: [], view: 'survey' };
+}
+// sessionStorage (not localStorage): survives an accidental refresh, but is
+// wiped when the tab closes, so answers don't linger on a shared device.
+function load() {
+  try { return JSON.parse(sessionStorage.getItem(STORE_KEY)); } catch (e) { return null; }
+}
+function save() {
+  try { sessionStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { /* private mode etc. */ }
+}
+
+let S = load() || fresh();
+let errors = {};
+let submitting = false;
+
+// ---------------------------------------------------------------------------
+// Submission
+// ---------------------------------------------------------------------------
+
+function payload(status) {
+  const x = a();
+  const list = v => (v || []).join('; ');
+  const other = (id, isList) => ((isList ? (x[id] || []).includes(OTHER) : x[id] === OTHER) ? (x[id + '_other'] || '') : '');
+  const p = {
+    status,
+    response_id: S.id,
+    q1_age: x.q1 || '',
+    q2_state: x.q2 || '',
+    q3_turn_first: list(x.q3),
+    q3_other: other('q3', true)
+  };
+  if (status === 'screened_out') return p;
+
+  const q4 = isTeen() ? 'q4a' : 'q4b';
+  const rank = x.rank || {}, cover = x.cover || {};
+  Object.assign(p, {
+    q4_concerns: list(x[q4]),
+    q4_other: other(q4, true),
+    q5_missed_due_to_period: x.q5,
+    q6_raised_with_doctor: x.q6,
+    q6_other: other('q6'),
+    direction_order: S.order.join(''),
+    dirA_want: x.dirA, dirB_want: x.dirB, dirC_want: x.dirC, dirD_want: x.dirD,
+    rank_A: parseInt(rank.A, 10), rank_B: parseInt(rank.B, 10), rank_C: parseInt(rank.C, 10), rank_D: parseInt(rank.D, 10),
+    cover_A: cover.A, cover_B: cover.B, cover_C: cover.C, cover_D: cover.D,
+    q13_vs_current_doctor: x.q13,
+    q14_booking_likelihood: x.q14,
+    // q15–q18 only apply to teen respondents (under 18); left blank for 18–25s.
+    q15_current_parent_access: isTeen() ? x.q15 : '',
+    q16_want_parent_to_see: isTeen() ? x.q16 : '',
+    q16_other: isTeen() ? other('q16') : '',
+    q17_comfort: isTeen() ? x.q17 : '',
+    q18_what_would_help: isTeen() && x.q17 <= 3 ? (x.q18 || '') : '',
+    q19_followup: list(x.q19),
+    email: (x.email || '').trim(),
+    website: x.website || '' // honeypot
+  });
+  return p;
+}
+
+async function send(p) {
+  if (!SUBMIT_URL) {
+    console.log('[demo mode] would submit:', p);
+    await new Promise(r => setTimeout(r, 400));
+    return;
+  }
+  // No custom headers → sent as text/plain, which avoids a CORS preflight
+  // (Apps Script web apps can't answer preflights).
+  const body = JSON.stringify(p);
+  try {
+    const res = await fetch(SUBMIT_URL, { method: 'POST', body });
+    const json = await res.json().catch(() => ({ ok: res.ok }));
+    if (!json.ok) throw new Error(json.error || 'Server error');
+  } catch (err) {
+    if (!(err instanceof TypeError)) throw err;
+    // Network/CORS hiccup: retry blind. The backend de-dupes on response_id,
+    // so a double delivery only lands once.
+    await fetch(SUBMIT_URL, { method: 'POST', mode: 'no-cors', body });
+  }
+}
+
+function screenOut() {
+  S.view = 'screenout';
+  save();
+  render();
+  window.scrollTo(0, 0);
+  send(payload('screened_out')).catch(err => console.warn('Screen-out not recorded:', err));
+}
+
+async function submit() {
+  if (submitting) return;
+  submitting = true;
+  delete errors._submit;
+  render();
+  try {
+    await send(payload('complete'));
+    const x = a();
+    S.warmThanks = !!((x.q19 || []).length && (x.email || '').trim());
+    S.view = 'thanks';
+    save();
+  } catch (err) {
+    console.error(err);
+    errors._submit = 'Sorry, something went wrong sending your answers. Please check your connection and try again.';
+  }
+  submitting = false;
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ---------------------------------------------------------------------------
+// Validation
+// ---------------------------------------------------------------------------
+
+function isEmpty(q, v) {
+  if (q.type === 'checkbox') return !v || !v.length;
+  if (q.type === 'grid') return !v || q.rows.some(r => !v[r.key]);
+  return v === undefined || v === null || String(v).trim() === '';
+}
+
+function validate(step) {
+  errors = {};
+  for (const q of stepQs(step)) {
+    const v = a()[q.id];
+    const pickedOther = q.other && (q.type === 'checkbox' ? (v || []).includes(OTHER) : v === OTHER);
+    if (q.required && isEmpty(q, v)) {
+      errors[q.id] = q.type === 'grid' ? 'Please answer every row.' : 'This question is required.';
+    } else if (pickedOther && !(a()[q.id + '_other'] || '').trim()) {
+      errors[q.id] = 'Please describe your “Other” answer.';
+    } else if (q.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) {
+      errors[q.id] = 'Please enter a valid email address.';
+    }
+  }
+  return !Object.keys(errors).length;
+}
+
+// ---------------------------------------------------------------------------
+// Navigation
+// ---------------------------------------------------------------------------
+
+function next() {
+  const step = STEPS[S.step];
+  if (!validate(step)) {
+    render();
+    const first = document.querySelector('.has-err');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (step.after && step.after() === 'stop') return;
+  let i = S.step + 1;
+  while (i < STEPS.length && STEPS[i].show && !STEPS[i].show()) i++;
+  S.history.push(S.step);
+  S.step = i;
+  save();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function back() {
+  if (!S.history.length) return;
+  S.step = S.history.pop();
+  errors = {};
+  save();
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+
+const app = document.getElementById('app');
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+const val = (x) => (typeof x === 'function' ? x() : x || '');
+const opts = q => q.options.map(o => (typeof o === 'string' ? { value: o, label: o } : o))
+  .concat(q.other ? [{ value: OTHER, label: 'Other' }] : []);
+
+function renderQ(q) {
+  const x = a();
+  let body = '';
+
+  if (q.type === 'checkbox' || q.type === 'radio') {
+    const sel = q.type === 'checkbox' ? (x[q.id] || []) : [x[q.id]];
+    const full = q.max && sel.length >= q.max;
+    body = opts(q).map((o, i) => {
+      const on = sel.includes(o.value);
+      const off = q.type === 'checkbox' && full && !on;
+      const iid = `${q.id}-${i}`;
+      let h = `<label class="choice${on ? ' on' : ''}${off ? ' off' : ''}" for="${iid}">
+        <input type="${q.type}" id="${iid}" name="${q.id}" value="${esc(o.value)}" data-q="${q.id}" data-kind="${q.type}"${on ? ' checked' : ''}${off ? ' disabled' : ''}>
+        <span>${esc(o.label)}</span></label>`;
+      if (o.value === OTHER && on) {
+        h += `<input type="text" class="other" id="${q.id}-other" data-q="${q.id}_other" data-kind="text"
+          value="${esc(x[q.id + '_other'])}" placeholder="Please describe" aria-label="Other, please describe" maxlength="500">`;
+      }
+      return h;
+    }).join('');
+  } else if (q.type === 'select') {
+    body = `<select id="${q.id}-select" data-q="${q.id}" data-kind="select" aria-label="${esc(q.title)}">
+      <option value="">${esc(q.placeholder)}</option>
+      ${q.options.map(o => `<option${x[q.id] === o ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+  } else if (q.type === 'scale') {
+    body = `<div class="pills">${[1, 2, 3, 4, 5].map(n => `<label class="pill">
+        <input type="radio" id="${q.id}-${n}" name="${q.id}" value="${n}" data-q="${q.id}" data-kind="scale"${x[q.id] === n ? ' checked' : ''}>
+        <span>${n}</span></label>`).join('')}</div>
+      <div class="scale-labels"><span>1 = ${esc(q.lo)}</span><span>5 = ${esc(q.hi)}</span></div>`;
+  } else if (q.type === 'grid') {
+    const g = x[q.id] || {};
+    body = q.rows.map(r => `<div class="grow" role="radiogroup" aria-label="${esc(r.label)}">
+        <div class="rl">${esc(r.label)}</div>
+        <div class="pills">${q.cols.map((c, ci) => `<label class="pill">
+          <input type="radio" id="${q.id}-${r.key}-${ci}" name="${q.id}-${r.key}" value="${esc(c)}" data-q="${q.id}" data-row="${r.key}" data-kind="grid"${g[r.key] === c ? ' checked' : ''}>
+          <span>${esc(c)}</span></label>`).join('')}</div></div>`).join('');
+  } else if (q.type === 'textarea') {
+    body = `<textarea id="${q.id}-text" data-q="${q.id}" data-kind="text" maxlength="5000" aria-label="${esc(q.title)}">${esc(x[q.id])}</textarea>`;
+  } else if (q.type === 'email') {
+    body = `<input type="email" id="${q.id}-text" data-q="${q.id}" data-kind="text" autocomplete="email"
+      placeholder="${esc(q.placeholder)}" value="${esc(x[q.id])}" aria-label="${esc(q.title)}" maxlength="254">`;
+  }
+
+  const err = errors[q.id];
+  return `<fieldset class="q${err ? ' has-err' : ''}">
+    <legend>${esc(q.title)}${q.required ? '' : ' <span class="opt">(optional)</span>'}</legend>
+    ${q.help ? `<p class="help">${esc(q.help)}</p>` : ''}
+    ${body}
+    ${err ? `<div class="err" role="alert">${esc(err)}</div>` : ''}
+  </fieldset>`;
+}
+
+function renderIntro() {
+  return `<div class="card">
+    <h1>Help us build a better health practice for girls and young women</h1>
+    <div class="intro">
+      <p>We are building a new kind of health practice for girls and young women, and we want to get it right before we build it. Your anonymous input will help us understand what you need and want.</p>
+      <p>This takes about seven minutes. There are no wrong answers and we are not selling anything here.</p>
+      <p class="help">Your answers are anonymous. At the end, you can choose to leave your email if you’d like us to follow up.</p>
+    </div>
+    <div class="nav"><button class="primary" data-act="next">Start</button></div>
+  </div>`;
+}
+
+function renderStep() {
+  const step = STEPS[S.step];
+  if (step.id === 'intro') return renderIntro();
+
+  const vis = visibleSteps();
+  const pct = Math.round((vis.indexOf(step) / vis.length) * 100);
+  let stimulus = '';
+  if (step.direction !== undefined) {
+    const letter = S.order[step.direction];
+    const d = DIRECTIONS[letter];
+    stimulus = `<div class="stimulus"><div class="tag">Direction ${letter}</div>
+      <h3>${esc(d.headline)}</h3><p>${esc(d.body)}</p></div>`;
+  }
+  const honeypot = step.id === 'contact'
+    ? '<div class="hp" aria-hidden="true"><label>Website <input type="text" tabindex="-1" autocomplete="off" data-q="website" data-kind="text"></label></div>'
+    : '';
+
+  return `<div class="progress" aria-hidden="true"><div style="width:${pct}%"></div></div>
+    <div class="card">
+      ${step.section ? `<div class="eyebrow">${esc(step.section)}</div>` : ''}
+      ${step.title ? `<h2>${esc(step.title)}</h2>` : ''}
+      ${step.intro ? `<div class="intro">${val(step.intro)}</div>` : ''}
+      ${stimulus}
+      ${stepQs(step).map(renderQ).join('')}
+      ${honeypot}
+      ${errors._submit ? `<div class="err" role="alert" style="margin-bottom:12px">${esc(errors._submit)}</div>` : ''}
+      <div class="nav">
+        ${S.history.length ? '<button class="ghost" data-act="back">Back</button>' : ''}
+        <button class="primary" data-act="next"${submitting ? ' disabled' : ''}>${submitting ? 'Submitting…' : step.nextLabel || 'Next'}</button>
+      </div>
+    </div>`;
+}
+
+function renderEnd(title, message, extra) {
+  return `<div class="card"><h1>${esc(title)}</h1><div class="intro"><p>${esc(message)}</p>${extra || ''}</div></div>`;
+}
+
+function render() {
+  const focusedId = document.activeElement && document.activeElement.id;
+  const demo = SUBMIT_URL ? '' : '<div class="demo">Demo mode: responses are not being saved. Set SUBMIT_URL in index.html.</div>';
+  let html;
+  if (S.view === 'screenout') {
+    html = renderEnd('Thank you for your time!',
+      'This survey is for people between the ages of 13 and 25, so we don’t have any further questions for you.',
+      '<p class="help">Picked the wrong age by mistake? <button class="linkbtn" data-act="unscreen">Go back</button></p>');
+  } else if (S.view === 'thanks') {
+    html = S.warmThanks
+      ? renderEnd('Thank you so much for your time!', 'We will be in touch soon.')
+      : renderEnd('Thank you for your time!', 'Your answers have been recorded.');
+  } else {
+    html = renderStep();
+  }
+  app.innerHTML = demo + html;
+  if (focusedId) {
+    const el = document.getElementById(focusedId);
+    if (el) el.focus({ preventScroll: true });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Events
+// ---------------------------------------------------------------------------
+
+app.addEventListener('click', e => {
+  const act = e.target.closest('[data-act]');
+  if (!act) return;
+  if (act.dataset.act === 'next') next();
+  else if (act.dataset.act === 'back') back();
+  else if (act.dataset.act === 'unscreen') { S.view = 'survey'; save(); render(); }
+});
+
+// Typing: update state without re-rendering, so the cursor stays put.
+app.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.kind !== 'text') return;
+  a()[t.dataset.q] = t.value;
+  save();
+});
+
+// Picking: update state and re-render (for "Other" boxes, the 3-item cap,
+// ranking column moves, and the conditional follow-up question).
+app.addEventListener('change', e => {
+  const t = e.target;
+  const id = t.dataset.q;
+  const kind = t.dataset.kind;
+  if (!id || kind === 'text') return;
+  const x = a();
+
+  if (kind === 'radio' || kind === 'select') {
+    x[id] = t.value;
+  } else if (kind === 'scale') {
+    x[id] = Number(t.value);
+  } else if (kind === 'checkbox') {
+    const q = Q[id];
+    let arr = (x[id] || []).slice();
+    if (t.checked) {
+      if (q.exclusive && t.value === q.exclusive) arr = [t.value];
+      else arr = arr.filter(v => v !== q.exclusive).concat(arr.includes(t.value) ? [] : [t.value]);
+      if (q.max && arr.length > q.max) arr = arr.slice(0, q.max);
+    } else {
+      arr = arr.filter(v => v !== t.value);
+    }
+    x[id] = arr;
+  } else if (kind === 'grid') {
+    const g = { ...(x[id] || {}) };
+    if (Q[id].unique) for (const r in g) if (r !== t.dataset.row && g[r] === t.value) delete g[r];
+    g[t.dataset.row] = t.value;
+    x[id] = g;
+  }
+
+  delete errors[id];
+  save();
+  render();
+  if (t.value === OTHER && t.checked !== false) {
+    const box = document.getElementById(id + '-other');
+    if (box) box.focus();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
